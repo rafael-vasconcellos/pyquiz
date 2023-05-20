@@ -96,7 +96,7 @@ def main_screen(end=False):
         resultContainer.setContentsMargins(0, 50, 0, 50)
         resultLayout = QVBoxLayout(resultContainer)
         resultLayout.setAlignment(Qt.AlignCenter)
-        result = title( f'{str(int(  (count/len(questions))*100  ))}%', 
+        result = title( f'Resultado: {str(int(  (count/len(questions))*100  ))}%', 
                         52, text.subtitle)
         resultLayout.addWidget(result)
         vLayout.addWidget(resultContainer)
