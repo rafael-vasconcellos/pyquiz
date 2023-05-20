@@ -118,6 +118,7 @@ def questions_screen():
 app = QApplication(sys.argv)
 tela = QMainWindow()
 body = QWidget()
+body.resize(1000, 700)
 body.setStyleSheet(f'background-color: {background.color}')
 body_layout = QVBoxLayout(body)
 
