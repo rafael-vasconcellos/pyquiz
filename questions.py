@@ -11,6 +11,8 @@ questions = [
     },
 ]
 
+questions.append(questions[0].copy()) # isto é um teste
+
 class Question:
     def __init__(self, index):
         self.index = questions.index(index)
@@ -20,5 +22,4 @@ class Question:
         self.altC = index['altC']
         self.altD = index['altD']
         self.answered = index['answered']
-
 
