@@ -36,7 +36,7 @@ def title(text_label, size, color=text.title, weight='bold'):
     """)
     return h1
 
-def displayText(layout, index, alternative, buttons):
+def displayText(layout, index, alternative):
     questions[current_question.index]['answered'] = 'correct' if alternative['label'] else 'wrong'
     for i in range(1, layout.count()):
         item = layout.itemAt(i)
@@ -45,9 +45,6 @@ def displayText(layout, index, alternative, buttons):
                 widget = item.widget()
                 layout.removeWidget(widget)
                 widget.deleteLater()
-
-    for button in buttons:
-        button.clicked.connect(lambda: None)
     
     label = title(alternative['exp'], 20, text.subtitle, weight='normal')
     layout.insertWidget(index, label)
