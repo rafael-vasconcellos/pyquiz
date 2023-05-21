@@ -71,12 +71,26 @@ def nextQuestion():
     return False
 
 
+def reset():
+    global count
+    count = 0
+    for indice in questions:
+        indice['answered'] = None
+    widget = body_layout.itemAt( body_layout.count()-1 ).widget()
+    widget.hide()
+    body_layout.itemAt( body_layout.count()-2 ).widget().show()
+
+    body_layout.removeWidget(widget)
+    #widget.deleteLater()
+    questions_screen.update()
+
+
 def main_screen(end=False):
     main_widget = QWidget()
     if end:
-        main_button = styled_button('Encerrar', x=150, y=75, weight='bold', callback=app.quit)
+        main_button = styled_button('Reiniciar', x=150, y=75, weight='bold', callback=reset)
     else:
-        main_button = styled_button('Iniciar', x=150, y=75, weight='bold', callback=questions_screen.update)
+        main_button = styled_button('Iniciar', x=150, y=75, weight='bold', callback= lambda: questions_screen.update(start=True))
 
     h1 = title('Pyquiz', 72, weight='bold')
     button_container = QWidget()
@@ -138,7 +152,8 @@ class questionsScreen:
         hLayout.addItem(QSpacerItem(80, 10, QSizePolicy.Expanding, QSizePolicy.Minimum))
         hLayout.addWidget(rightContainer)
 
-    def update(self):
+    def update(self, start=False):
+        #.setStyleSheet('background-color: red')
         if nextQuestion():
                 self.h1.setText(current_question.text)
                 self.altA.setText(current_question.altA['text'])
@@ -149,9 +164,14 @@ class questionsScreen:
                 self.altC.clicked.connect( lambda: displayText(self.vLaylout, 8, current_question.altC, self.next_button) )
                 self.altD.setText(current_question.altD['text'])
                 self.altD.clicked.connect( lambda: displayText(self.vLaylout, 10, current_question.altD, self.next_button) )
-                body_layout.addWidget(self._questions_widget)
+                self.next_button.clicked.disconnect()
         else:
-                body_layout.addWidget(main_screen(end=True))
+                body_layout.addWidget(main_screen(end=True))   
+                body_layout.itemAt(body_layout.count()-2).widget().hide()
+        
+        if start:
+            body_layout.addWidget(self._questions_widget)
+            body_layout.itemAt(body_layout.count()-2).widget().hide()
 
         for i in range(1, self.vLaylout.count()):
             if 'widget' in dir(self.vLaylout.itemAt(i)):
@@ -159,9 +179,6 @@ class questionsScreen:
                 if isinstance(widget, QLabel):
                     self.vLaylout.removeWidget(widget)
                     widget.deleteLater()
-
-        self.next_button.clicked.disconnect()
-        body_layout.itemAt(body_layout.count()-2).widget().hide()
 
 
 app = QApplication(sys.argv)
