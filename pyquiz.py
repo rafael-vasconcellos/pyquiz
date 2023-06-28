@@ -15,27 +15,35 @@ background.color = '#0F172A'
 
 count = 0
 
-def styled_button(text_label, x=700, y=100, callback= None, weight='normal'):
+def styled_button(text_label, x=700, y=100, callback= None, weight='normal', font_size=27):
     button = QPushButton(text_label)
-    button.setFixedSize(x, y)
+    button.setFixedWidth(x)
+    button.setMinimumHeight(y)
+    button.setContentsMargins(0, 0, 0, 0)
     button.setCursor(Qt.PointingHandCursor)
     button.setStyleSheet(f"""
         border-radius: 30px;
         background-color: {text.buttonRGB};
         color: {text.button};
-        font-size: 27px;
+        font-size: {font_size}px;
         font-weight: {weight};
     """)
     if callback:
         button.clicked.connect(callback)
     return button
 
-def title(text_label, size, color=text.title, weight='normal'):
+def title(text_label, size, color=text.title, weight='normal', min_width=None, max_width=None):
     h1 = QLabel(text_label)
+    h1.setWordWrap(True)
+    if min_width:
+        h1.setMinimumWidth(min_width)
+    if max_width:
+        h1.setMaximumWidth(max_width)
     h1.setStyleSheet(f"""
         font-size: {size}px;
         font-weight: {weight};
         color: {color};
+        
     """)
     return h1
 
@@ -56,7 +64,7 @@ def displayText(layout, index, alternative, next_button):
             elif isinstance(widget, QPushButton):
                     widget.clicked.disconnect()
     
-    label = title(alternative['exp'], 20, text.subtitle)
+    label = title(alternative['exp'], 20, text.subtitle, max_width=screen_geometry.width()*0.50)
     layout.insertWidget(index, label)
     next_button.clicked.connect(questions_screen.update)
 
@@ -127,17 +135,18 @@ class questionsScreen:
         self._questions_widget.setContentsMargins(20, 0, 0, 0)
 
         self.next_button = styled_button('Next', x=150, y=75, weight='bold', callback= lambda: None)
-        self.h1 = title('', 52, weight='bold')
-        self.altA = styled_button('')
-        self.altB = styled_button('')
-        self.altC = styled_button('')
-        self.altD = styled_button('')
+        self.h1 = title('', 25, weight='bold', min_width=screen_geometry.width()*0.80)
+        self.altA = styled_button('', font_size=20)
+        self.altB = styled_button('', font_size=20)
+        self.altC = styled_button('', font_size=20)
+        self.altD = styled_button('', font_size=20)
 
         hLayout = QHBoxLayout(self._questions_widget)
         vLaylout = QVBoxLayout() ; self.vLaylout = vLaylout
         vLaylout.setAlignment(Qt.AlignCenter)
 
-        vLaylout.addWidget(self.h1) ; vLaylout.addItem(QSpacerItem(20, 110, QSizePolicy.Minimum, QSizePolicy.Expanding))
+        vLaylout.addWidget(self.h1)
+        vLaylout.addItem(QSpacerItem(20, 35, QSizePolicy.Minimum, QSizePolicy.Expanding))
         vLaylout.addWidget(self.altA) ; vLaylout.addSpacing(10)
         vLaylout.addWidget(self.altB) ; vLaylout.addSpacing(10)
         vLaylout.addWidget(self.altC) ; vLaylout.addSpacing(10)
@@ -183,14 +192,22 @@ class questionsScreen:
 
 app = QApplication(sys.argv)
 tela = QMainWindow()
+scroll_area = QScrollArea(tela)
+scroll_area.setWidgetResizable(True)
+screen_geometry = app.primaryScreen().geometry()
+
 body = QWidget()
+scroll_area.setWidget(body)
+tela.setCentralWidget(scroll_area)
+
+tela.setMinimumSize(1000, 700)
+#(screen_geometry.width(), screen_geometry.height())
 body.resize(1000, 700)
 body.setStyleSheet(f'background-color: {background.color}')
-body_layout = QVBoxLayout(body)
+
 
 questions_screen = questionsScreen()
-
-
+body_layout = QVBoxLayout(body)
 body_layout.addWidget(main_screen())
-body.show()
+tela.show()
 app.exec()
