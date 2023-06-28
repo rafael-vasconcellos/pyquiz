@@ -200,9 +200,9 @@ body = QWidget()
 scroll_area.setWidget(body)
 tela.setCentralWidget(scroll_area)
 
-tela.setMinimumSize(1000, 700)
+tela.setMinimumSize(1280, 700)
 #(screen_geometry.width(), screen_geometry.height())
-body.resize(1000, 700)
+#body.resize(1000, 700)
 body.setStyleSheet(f'background-color: {background.color}')
 
 
